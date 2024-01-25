@@ -47,6 +47,8 @@ def arg_parse():
                 help = 'Number of graph convolution layers before each pooling')
     parser.add_argument('--dropout', dest = 'dropout', type = float,
                 help = 'Dropout rate.')
+    parser.add_argument('--fold_number', dest = 'fold_number', type = int,
+                        default = 1, help = 'Fold number')
 
     # Set default input argument
     parser.set_defaults(cuda = '0',
@@ -362,9 +364,7 @@ if __name__ == "__main__":
     
     ### Train the model
     # Train [FOLD-1x]
-    fold_n = 5
-    # prog_args.model = 'load'
-    # load_path = './' + dataset + '-result/epoch_60_1/best_train_model.pt'
+    fold_n = prog_args.fold_number
     load_path = ''
     graph_output_folder = dataset + '-graph-data'
     yTr = np.load('./' + graph_output_folder + '/form_data/yTr' + str(fold_n) + '.npy')
