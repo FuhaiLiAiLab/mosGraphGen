@@ -83,4 +83,7 @@ python geo_ROSMAP_tmain_gformer.py --fold_number 1
 
 ## 4. Downstream analysis for with patient specific biomarkers discovery
 The R programing language will be used here to visualize the result in the file 'UCSC_gformer_vis.R', with the attention mechanism in model GraphFormer.
-![]()
+
+Following is an patient-specific biomaker discovery analysis exmaple. For patient TCGA-D7-6525-01
+
+![](./Paper-figures/Downstream-TCGA-D7-6525-01.png)
