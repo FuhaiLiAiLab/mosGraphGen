@@ -169,6 +169,7 @@ class TransformerConv(MessagePassing):
         edge_index: Adj,
         fold_n: int,
         layer: str,
+        dataset: str,
         edge_attr: OptTensor = None,
         return_attention_weights=None,
     ):
@@ -191,6 +192,7 @@ class TransformerConv(MessagePassing):
         """
         self.fold_n = fold_n
         self.layer = layer
+        self.dataset = dataset
         H, C = self.heads, self.out_channels
 
         if isinstance(x, Tensor):
@@ -246,7 +248,8 @@ class TransformerConv(MessagePassing):
         alpha = F.dropout(alpha, p=self.dropout, training=self.training)
 
         # import pdb; pdb.set_trace()
-        merged_gene_edge_num_all_df = pd.read_csv('./UCSC-graph-data/merged-gene-edge-num-all.csv')
+        dataset = self.dataset
+        merged_gene_edge_num_all_df = pd.read_csv('./' + dataset + '-graph-data/merged-gene-edge-num-all.csv')
         weight_gene_edge_num_all_df = merged_gene_edge_num_all_df.copy()
         edge_weight_from = alpha[:,0].cpu().detach().numpy()
         edge_weight_to = alpha[:,1].cpu().detach().numpy()
@@ -254,7 +257,7 @@ class TransformerConv(MessagePassing):
         weight_gene_edge_num_all_df['edge_weight_to'] = edge_weight_to
         weight_gene_edge_num_all_df['edge_weight_avg'] = (edge_weight_from + edge_weight_to) / 2
 
-        save_path = './UCSC-analysis/fold_' + str(self.fold_n)
+        save_path = './' + dataset + '-analysis/fold_' + str(self.fold_n)
         while os.path.exists(save_path) == False:
             os.mkdir(save_path)
         weight_gene_edge_num_all_df.to_csv(save_path + '/' + self.layer + '_edge_weight.csv', index=False, header=True)
@@ -304,16 +307,16 @@ class GraphFormerDecoder(nn.Module):
         conv_last = TransformerConv(in_channels=hidden_dim * self.num_head, out_channels=embedding_dim, heads=self.num_head)
         return conv_first, conv_block, conv_last
 
-    def forward(self, x, edge_index, fold_n):
-        x = self.conv_first(x, edge_index, fold_n, layer='first')
+    def forward(self, x, edge_index, fold_n, dataset):
+        x = self.conv_first(x, edge_index, fold_n, layer='first', dataset=dataset)
         x = self.x_norm_first(x)
         x = self.act2(x)
 
-        x = self.conv_block(x, edge_index, fold_n, layer='block')
+        x = self.conv_block(x, edge_index, fold_n, layer='block', dataset=dataset)
         x = self.x_norm_block(x)
         x = self.act2(x)
 
-        x = self.conv_last(x, edge_index, fold_n, layer='last')
+        x = self.conv_last(x, edge_index, fold_n, layer='last', dataset=dataset)
         x = self.x_norm_last(x)
         x = self.act2(x)
         
