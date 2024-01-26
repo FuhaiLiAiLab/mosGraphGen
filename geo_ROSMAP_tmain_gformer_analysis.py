@@ -117,8 +117,8 @@ def test_geogformer(args, fold_n, test_load_path, test_save_path, device, graph_
 
     # Run test model
     model.eval()
-    index = 0
-    upper_index = 1
+    index = 5
+    upper_index = 6
     geo_datalist = read_batch(index, upper_index, xTe, yTe, num_feature, num_node, edge_index, graph_output_folder)
     dataset_loader, node_num, feature_dim = GeoGraphLoader.load_graph(geo_datalist, args)
     print('TEST MODEL...')
@@ -149,15 +149,16 @@ if __name__ == "__main__":
 
     ### Train the model
     # Train [FOLD-1x]
-    fold_n = 5
-    graph_output_folder = dataset + '-graph-data'
-    yTr = np.load('./' + graph_output_folder + '/form_data/yTr' + str(fold_n) + '.npy')
-    # yTr = np.load('./' + graph_output_folder + '/form_data/y_split1.npy')
-    unique_numbers, occurrences = np.unique(yTr, return_counts=True)
-    num_class = len(unique_numbers)
+    k = 5
+    for fold_n in np.arange(1, k + 1):
+        graph_output_folder = dataset + '-graph-data'
+        yTr = np.load('./' + graph_output_folder + '/form_data/yTr' + str(fold_n) + '.npy')
+        # yTr = np.load('./' + graph_output_folder + '/form_data/y_split1.npy')
+        unique_numbers, occurrences = np.unique(yTr, return_counts=True)
+        num_class = len(unique_numbers)
 
-    ### TEST THE MODEL
-    test_load_path = './' + dataset + '-result/gformer/fold_' + str(fold_n) + '/best_train_model.pt'
-    test_save_path = './' + dataset + '-result/gformer/fold_' + str(fold_n)
-    test_geogformer(prog_args, fold_n, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset)
+        ### TEST THE MODEL
+        test_load_path = './' + dataset + '-result/gformer/fold_' + str(fold_n) + '/best_train_model.pt'
+        test_save_path = './' + dataset + '-result/gformer/fold_' + str(fold_n)
+        test_geogformer(prog_args, fold_n, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset)
 

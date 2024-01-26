@@ -43,6 +43,6 @@ class NetAnalyse():
 
 
 if __name__ == '__main__':
-    fold_n = 1
     k = 5
-    NetAnalyse().fold_avg(fold_n)
+    for fold_n in range(1, k + 1):
+        NetAnalyse().fold_avg(fold_n)
