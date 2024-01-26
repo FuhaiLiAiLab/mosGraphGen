@@ -94,7 +94,7 @@ def test_geogformer_model(dataset_loader, model, device, args, fold_n, dataset):
     return model, batch_loss, ypred
 
 
-def test_geogformer(args, fold_n, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset):
+def test_geogformer(args, fold_n, index, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset):
     # BUILD [GraphFormer, DECODER] MODEL
     model = build_geogformer_model(args, device, graph_output_folder, num_class)
     model.load_state_dict(torch.load(test_load_path, map_location=device))
@@ -117,8 +117,7 @@ def test_geogformer(args, fold_n, test_load_path, test_save_path, device, graph_
 
     # Run test model
     model.eval()
-    index = 5
-    upper_index = 6
+    upper_index = index + 1
     geo_datalist = read_batch(index, upper_index, xTe, yTe, num_feature, num_node, edge_index, graph_output_folder)
     dataset_loader, node_num, feature_dim = GeoGraphLoader.load_graph(geo_datalist, args)
     print('TEST MODEL...')
@@ -149,6 +148,7 @@ if __name__ == "__main__":
 
     ### Train the model
     # Train [FOLD-1x]
+    index = 5
     k = 5
     for fold_n in np.arange(1, k + 1):
         graph_output_folder = dataset + '-graph-data'
@@ -156,9 +156,8 @@ if __name__ == "__main__":
         # yTr = np.load('./' + graph_output_folder + '/form_data/y_split1.npy')
         unique_numbers, occurrences = np.unique(yTr, return_counts=True)
         num_class = len(unique_numbers)
-
         ### TEST THE MODEL
         test_load_path = './' + dataset + '-result/gformer/fold_' + str(fold_n) + '/best_train_model.pt'
         test_save_path = './' + dataset + '-result/gformer/fold_' + str(fold_n)
-        test_geogformer(prog_args, fold_n, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset)
+        test_geogformer(prog_args, fold_n, index, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset)
 

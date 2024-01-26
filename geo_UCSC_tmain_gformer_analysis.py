@@ -81,20 +81,20 @@ def build_geogformer_model(args, device, graph_output_folder, num_class):
     model = model.to(device)
     return model
 
-def test_geogformer_model(dataset_loader, model, device, args, fold_n):
+def test_geogformer_model(dataset_loader, model, device, args, fold_n, dataset):
     batch_loss = 0
     for batch_idx, data in enumerate(dataset_loader):
         x = Variable(data.x, requires_grad=False).to(device)
         edge_index = Variable(data.edge_index, requires_grad=False).to(device)
         label = Variable(data.label, requires_grad=True).to(device)
         # This will use method [def forward()] to make prediction
-        output, ypred = model(x, edge_index, fold_n)
+        output, ypred = model(x, edge_index, fold_n, dataset)
         loss = model.loss(output, label)
         batch_loss += loss.item()
     return model, batch_loss, ypred
 
 
-def test_geogformer(args, fold_n, test_load_path, test_save_path, device, graph_output_folder, num_class):
+def test_geogformer(args, fold_n, index, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset):
     # BUILD [GraphFormer, DECODER] MODEL
     model = build_geogformer_model(args, device, graph_output_folder, num_class)
     model.load_state_dict(torch.load(test_load_path, map_location=device))
@@ -117,13 +117,12 @@ def test_geogformer(args, fold_n, test_load_path, test_save_path, device, graph_
 
     # Run test model
     model.eval()
-    index = 0
-    upper_index = 1
+    upper_index = index + 1
     geo_datalist = read_batch(index, upper_index, xTe, yTe, num_feature, num_node, edge_index, graph_output_folder)
     dataset_loader, node_num, feature_dim = GeoGraphLoader.load_graph(geo_datalist, args)
     print('TEST MODEL...')
     # import pdb; pdb.set_trace()
-    model, batch_loss, batch_ypred = test_geogformer_model(dataset_loader, model, device, args, fold_n)
+    model, batch_loss, batch_ypred = test_geogformer_model(dataset_loader, model, device, args, fold_n, dataset)
     print('BATCH LOSS: ', batch_loss)
 
 
@@ -149,15 +148,16 @@ if __name__ == "__main__":
 
     ### Train the model
     # Train [FOLD-1x]
-    fold_n = 5
-    graph_output_folder = dataset + '-graph-data'
-    yTr = np.load('./' + graph_output_folder + '/form_data/yTr' + str(fold_n) + '.npy')
-    # yTr = np.load('./' + graph_output_folder + '/form_data/y_split1.npy')
-    unique_numbers, occurrences = np.unique(yTr, return_counts=True)
-    num_class = len(unique_numbers)
-
-    ### TEST THE MODEL
-    test_load_path = './' + dataset + '-result/gformer/fold_' + str(fold_n) + '/best_train_model.pt'
-    test_save_path = './' + dataset + '-result/gformer/fold_' + str(fold_n)
-    test_geogformer(prog_args, fold_n, test_load_path, test_save_path, device, graph_output_folder, num_class)
+    index = 1
+    k = 5
+    for fold_n in range(1, k + 1):
+        graph_output_folder = dataset + '-graph-data'
+        yTr = np.load('./' + graph_output_folder + '/form_data/yTr' + str(fold_n) + '.npy')
+        # yTr = np.load('./' + graph_output_folder + '/form_data/y_split1.npy')
+        unique_numbers, occurrences = np.unique(yTr, return_counts=True)
+        num_class = len(unique_numbers)
+        ### TEST THE MODEL
+        test_load_path = './' + dataset + '-result/gformer/fold_' + str(fold_n) + '/best_train_model.pt'
+        test_save_path = './' + dataset + '-result/gformer/fold_' + str(fold_n)
+        test_geogformer(prog_args, fold_n, index, test_load_path, test_save_path, device, graph_output_folder, num_class, dataset)
 
