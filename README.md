@@ -23,7 +23,7 @@ https://xenabrowser.net/datapages/?cohort=TCGA%20Pan-Cancer%20(PANCAN)&removeHub
 
 
 Check the jupyter nodebook 'UCSC_union_raw_data_process.ipynb' for details.
-![](./Paper-figures/UCSC-flowchart.png)
+<!-- ![](./Paper-figures/UCSC-flowchart.png) -->
 
 ## 2. ROSMAP Dataset Processing
 * parse the multiomics data from the synapse website of the dataset ROSMAP https://www.synapse.org/#!Synapse:syn23446022
@@ -38,7 +38,7 @@ Check the jupyter nodebook 'ROSMAP_union_raw_data_process.ipynb' for details.
 ![](./Paper-figures/ROSMAP-flowchart.png)
 
 ## 3. Run the Graph Neural Network Model
-![](./Paper-figures/Model.png)
+<!-- ![](./Paper-figures/Model.png) -->
 
 ### 3.1 Load the data into NumPy format
 change the dataset arguments if different dataset will be selected to run the experiments.
