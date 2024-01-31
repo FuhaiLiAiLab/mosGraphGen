@@ -35,10 +35,10 @@ Check the jupyter nodebook 'UCSC_union_raw_data_process.ipynb' for details.
 * parse the clinical data https://www.synapse.org/#!Synapse:syn3191087
 
 Check the jupyter nodebook 'ROSMAP_union_raw_data_process.ipynb' for details.
-![](./Paper-figures/ROSMAP-flowchart.png)
+<!-- ![](./Paper-figures/ROSMAP-flowchart.png) -->
 
 ## 3. Run the Graph Neural Network Model
-<!-- ![](./Paper-figures/Model.png) -->
+![](./Paper-figures/Model.png)
 
 ### 3.1 Load the data into NumPy format
 change the dataset arguments if different dataset will be selected to run the experiments.
