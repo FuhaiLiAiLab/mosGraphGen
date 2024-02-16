@@ -36,6 +36,7 @@ Check the jupyter nodebook 'UCSC_union_raw_data_process.ipynb' for details.
 
 Check the jupyter nodebook 'ROSMAP_union_raw_data_process.ipynb' for details.
 <!-- ![](./Paper-figures/ROSMAP-flowchart.png) -->
+![](./Paper-figures/Updated_Rosmap_v2.png)
 
 ## 3. Run the Graph Neural Network Model
 ![](./Paper-figures/Model.png)
