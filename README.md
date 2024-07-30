@@ -4,6 +4,8 @@ If you want to cite this tool, please add the citation of following paper link:
 
 https://www.biorxiv.org/content/10.1101/2024.05.15.594360v1.full.pdf
 
+Or contact me via email: hemingzhang@wustl.edu
+
 ## 1. UCSC Dataset Processing
 * Parse the data from the UCSC Xena website in PANCAN cohort:
 https://xenabrowser.net/datapages/?cohort=TCGA%20Pan-Cancer%20(PANCAN)&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443
